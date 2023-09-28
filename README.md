@@ -1,6 +1,84 @@
-# template-for-proposals
+# String.prototype.removePrefix / String.prototype.removeSuffix
 
-A repository template for ECMAScript proposals.
+ECMAScript proposal, specification, and reference implementation for `String.prototype.remove{Prefix,Suffix}`.
+
+## Status
+
+**Author(s)**: @hyperupcall
+
+**Champion(s)**: TBD
+
+**Stage:** 0
+
+## Motivation
+
+The lack of a built-in way to remove a prefix substring or a suffix substring from a string is a great inconvenience and incompleteness of JavaScript. Fixing this paper-cut will bring JavaScript more in line with the conveniences of other modern-day languages.
+
+Current alternatives to a native method are too slow, verbose, and hard-to-read.
+
+Commonly, [`.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) used:
+
+```js
+// removePrefix
+let str = 'greninja'
+str.slice('gren'.length - 1)
+// => ninja
+
+// removeSuffix
+let str = 'charizard'
+str.slice(0, str.length - 'izard'.length)
+// => char
+```
+
+This approach is difficult to read (especially when nested/repeated) and not semantic.
+
+Sometimes, regular expressions are used:
+
+```js
+let str = 'mudkip'
+str.replace(/kip$/, '')
+```
+
+This isn't performant [jsPerf](https://jsperf.app/haxumu) and requires knowledge of regular expressions.
+
+## Proposed Solution
+
+We propose adding `String.prototype.removePrefix` and `String.prototype.removeSuffix` to the String prototype.
+
+```js
+'greninja'.removePrefix('gren')
+// => ninja
+
+'charizard'.removeSuffix('izard')
+// => char
+```
+
+Fixing this paper-cut will bring JavaScript more in line with the conveniences of other modern-day languages.
+
+## High-level API
+
+The proposed signature is:
+
+```js
+String.prototype.removePrefix(prefix: string): string
+```
+
+```js
+String.prototype.removeSuffix(suffix: string): string
+```
+
+## Naming
+
+## Comparison to other languages
+
+- Ruby (since v2.5) has [`.delete_prefix`](https://ruby-doc.org/current/String.html#method-i-delete_prefix) and [`.delete_suffix`](https://ruby-doc.org/current/String.html#method-i-delete_suffix)
+- Python (since v3.9) has [`.removeprefix`](https://docs.python.org/3/library/stdtypes.html#str.removeprefix) and [`.removesuffix`](https://docs.python.org/3/library/stdtypes.html#str.removesuffix)
+- Rust (since v1.45.0) has [`.strip_prefix`](https://doc.rust-lang.org/std/string/struct.String.html#method.strip_prefix) and [`.strip_suffix`](https://doc.rust-lang.org/std/string/struct.String.html#method.strip_suffix)
+- Go (since v1.1) has [`strings.TrimPrefix`](https://pkg.go.dev/strings#TrimPrefix) and [`strings.TrimSuffix`](https://pkg.go.dev/strings#TrimSuffix)
+
+## Credit
+
+[proposal-string-replaceall](https://github.com/tc39/proposal-string-replaceall) and [proposal-string-pad-start-end](https://github.com/tc39/proposal-string-pad-start-end).
 
 ## Before creating a proposal
 
@@ -12,11 +90,7 @@ Please ensure the following:
 ## Create your proposal repo
 
 Follow these steps:
-  1. Click the green [“use this template”](https://github.com/tc39/template-for-proposals/generate) button in the repo header. (Note: Do not fork this repo in GitHub's web interface, as that will later prevent transfer into the TC39 organization)
-  1. Update ecmarkup and the biblio to the latest version: `npm install --save-dev ecmarkup@latest && npm install --save-dev --save-exact @tc39/ecma262-biblio@latest`.
   1. Go to your repo settings page:
-      1. Under “General”, under “Features”, ensure “Issues” is checked, and disable “Wiki”, and “Projects” (unless you intend to use Projects)
-      1. Under “Pull Requests”, check “Always suggest updating pull request branches” and “automatically delete head branches”
       1. Under the “Pages” section on the left sidebar, and set the source to “deploy from a branch” and check “Enforce HTTPS”
       1. Under the “Actions” section on the left sidebar, under “General”, select “Read and write permissions” under “Workflow permissions” and click “Save”
   1. [“How to write a good explainer”][explainer] explains how to make a good first impression.

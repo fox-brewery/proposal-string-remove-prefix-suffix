@@ -4,36 +4,36 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
 <script src="./spec.js"></script>
 <pre class="metadata">
-title: Proposal Title Goes Here
-stage: -1
-contributors: Your Name(s) Here
+title: String.prototype.removePrefix / removeSuffix
+stage: 0
+contributors: Edwin Kofler
 </pre>
 
-<emu-clause id="sec-demo-clause">
-  <h1>This is an emu-clause</h1>
-  <p>This is an algorithm:</p>
-  <emu-alg>
-    1. Let _proposal_ be *undefined*.
-    1. If IsAccepted(_proposal_) is *true*, then
-      1. Let _stage_ be *0*<sub>ℤ</sub>.
-    1. Else,
-      1. Let _stage_ be *-1*<sub>ℤ</sub>.
-    1. Return ? ToString(_stage_).
-  </emu-alg>
+<emu-clause id="sec-startswith" type="abstract operation">
+	<h1>
+		StartsWith (
+			_argument_: an ECMAScript language value,
+		)
+	</h1>
+	<dl class="header">
+		<dt>description</dt>
+		<dd>It converts _argument_ to an integer representing its Number value with fractional part truncated, or to +∞ or -∞ when that Number value is infinite.</dd>
+	</dl>
+	<emu-alg>
+		1. Return _argument_.
+	</emu-alg>
 </emu-clause>
 
-<emu-clause id="sec-is-accepted" type="abstract operation">
-  <h1>
-      IsAccepted (
-        _proposal_: an ECMAScript language value
-      ): a Boolean
-  </h1>
-  <dl class="header">
-    <dt>description</dt>
-    <dd>Tells you if the proposal was accepted</dd>
-  </dl>
-  <emu-alg>
-    1. If _proposal_ is not a String, or is not accepted, return *false*.
-    1. Return *true*.
-  </emu-alg>
+<emu-clause id="String.prototype.removePrefix">
+	<h1>String.prototype.removePrefix ( _prefix_ )</h1>
+	<p>When the `removePrefix` method is called, the following steps are taken:</p>
+	<emu-alg>
+		1. Let _O_ be ? RequireObjectCoercible(*this* value).
+		1. Let _S_ be ? ToString(_O_).
+		1. Let _isPrefix_ be ? StartsWith(_S_).
+		1. Let _len_ be the length of _S_.
+		1. Let _substring_ be the *substring* of _S_ from 0 to _len_.
+		1. If _isPrefix_ is *true*, return _substring_.
+		1. Return _S_.
+	</emu-alg>
 </emu-clause>
