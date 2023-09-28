@@ -12,15 +12,48 @@ contributors: Edwin Kofler
 <emu-clause id="sec-startswith" type="abstract operation">
 	<h1>
 		StartsWith (
-			_argument_: an ECMAScript language value,
+			_str_: an ECMAScript language value,
 		)
 	</h1>
 	<dl class="header">
 		<dt>description</dt>
-		<dd>It converts _argument_ to an integer representing its Number value with fractional part truncated, or to +∞ or -∞ when that Number value is infinite.</dd>
+		<dd>It returns _str_.</dd>
 	</dl>
 	<emu-alg>
-		1. Return _argument_.
+		1. Return _str_.
+	</emu-alg>
+</emu-clause>
+
+<emu-clause id="sec-endswith" type="abstract operation">
+	<h1>
+		EndsWith (
+			_str_: an ECMAScript language value,
+		)
+	</h1>
+	<dl class="header">
+		<dt>description</dt>
+		<dd>It returns _str_.</dd>
+	</dl>
+	<emu-alg>
+		1. Return _str_.
+	</emu-alg>
+</emu-clause>
+
+<emu-clause id="sec-slice" type="abstract operation">
+	<h1>
+		Slice (
+			_start_: an ECMAScript language value,
+			_end_: an ECMAScript language value,
+		)
+	</h1>
+	<dl class="header">
+		<dt>description</dt>
+		<dd>It returns _str_. If _start_ is undefined.</dd>
+	</dl>
+	<emu-alg>
+		<!-- TODO: optional not working -->
+		1. If _start_ is *undefined*, Return _str_.
+		1. Else, Return _str_.
 	</emu-alg>
 </emu-clause>
 
@@ -31,9 +64,24 @@ contributors: Edwin Kofler
 		1. Let _O_ be ? RequireObjectCoercible(*this* value).
 		1. Let _S_ be ? ToString(_O_).
 		1. Let _isPrefix_ be ? StartsWith(_S_).
+		1. If _isPrefix_ is *false*, return _S_.
 		1. Let _len_ be the length of _S_.
-		1. Let _substring_ be the *substring* of _S_ from 0 to _len_.
-		1. If _isPrefix_ is *true*, return _substring_.
-		1. Return _S_.
+		1. Let _substring_ be ? Slice(0, _len_).
+		1. Return _substring_.
+	</emu-alg>
+</emu-clause>
+
+<emu-clause id="String.prototype.removeSuffix">
+	<h1>String.prototype.removeSuffix ( _prefix_ )</h1>
+	<p>When the `removeSuffix` method is called, the following steps are taken:</p>
+	<emu-alg>
+		1. Let _O_ be ? RequireObjectCoercible(*this* value).
+		1. Let _S_ be ? ToString(_O_).
+		1. Let _isSuffix_ be ? EndsWith(_S_).
+		1. If _isSuffix_ is *false*, return _S_.
+		1. Let _len_ be the length of _S_.
+		1. Let _prefixlen_ be the length of _prefix_.
+		1. Let _substring_ be ? Slice(0, _len_ - _prefixlen_).
+		1. Return _substring_.
 	</emu-alg>
 </emu-clause>
