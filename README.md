@@ -64,8 +64,6 @@ String.prototype.removePrefix(prefix: string): string
 String.prototype.removeSuffix(suffix: string): string
 ```
 
-See [polyfill.js](./polyfill.js) for details.
-
 ## Comparison to other languages
 
 - Python (since v3.9) has [`.removeprefix`](https://docs.python.org/3/library/stdtypes.html#str.removeprefix) and [`.removesuffix`](https://docs.python.org/3/library/stdtypes.html#str.removesuffix)
