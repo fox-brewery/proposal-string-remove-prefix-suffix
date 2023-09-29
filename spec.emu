@@ -9,52 +9,100 @@ stage: 0
 contributors: Edwin Kofler
 </pre>
 
+<!--
+  TODO: Probably wrong to copy-paste <emu-alg>'s for
+  String.prototype.{startsWith,endsWith,slice} and make
+  them abstract operations for the purposes of this proposal.
+  Trying to get around "could not find definition" errors.
+-->
+
 <emu-clause id="sec-startswith" type="abstract operation">
-	<h1>
-		StartsWith (
-			_str_: an ECMAScript language value,
-		)
-	</h1>
-	<dl class="header">
-		<dt>description</dt>
-		<dd>It returns _str_.</dd>
-	</dl>
+	<h1>StringStartsWithBuiltinsImpl ( _searchString_ [ , _position_ )</h1>
+	<dl class="header"></dl>
+	<p>This method performs the following steps when called:</p>
 	<emu-alg>
-		1. Return _str_.
+		1. Let _O_ be ? RequireObjectCoercible(*this* value).
+		1. Let _S_ be ? ToString(_O_).
+		1. Let _isRegExp_ be ? IsRegExp(_searchString_).
+		1. If _isRegExp_ is *true*, throw a *TypeError* exception.
+		1. Let _searchStr_ be ? ToString(_searchString_).
+		1. Let _len_ be the length of _S_.
+		1. If _position_ is *undefined*, let _pos_ be 0; else let _pos_ be ? ToIntegerOrInfinity(_position_).
+		1. Let _start_ be the result of clamping _pos_ between 0 and _len_.
+		1. Let _searchLength_ be the length of _searchStr_.
+		1. If _searchLength_ = 0, return *true*.
+		1. Let _end_ be _start_ + _searchLength_.
+		1. If _end_ > _len_, return *false*.
+		1. Let _substring_ be the substring of _S_ from _start_ to _end_.
+		1. If _substring_ is _searchStr_, return *true*.
+		1. Return *false*.
 	</emu-alg>
+	<emu-note>
+		<p>This method returns *true* if the sequence of code units of _searchString_ converted to a String is the same as the corresponding code units of this object (converted to a String) starting at index _position_. Otherwise it returns *false*.</p>
+	</emu-note>
+	<emu-note>
+		<p>Throwing an exception if the first argument is a RegExp is specified in order to allow future editions to define extensions that allow such argument values.</p>
+	</emu-note>
+	<emu-note>
+		<p>This method is intentionally generic; it does not require that its *this* value be a String object. Therefore, it can be transferred to other kinds of objects for use as a method.</p>
+	</emu-note>
 </emu-clause>
 
 <emu-clause id="sec-endswith" type="abstract operation">
-	<h1>
-		EndsWith (
-			_str_: an ECMAScript language value,
-		)
-	</h1>
-	<dl class="header">
-		<dt>description</dt>
-		<dd>It returns _str_.</dd>
-	</dl>
+	<h1>StringEndsWithBuiltinsImpl ( _searchString_ [ , _endPosition_ ] )</h1>
+	<dl class="header"></dl>
+	<p>This method performs the following steps when called:</p>
 	<emu-alg>
-		1. Return _str_.
+		1. Let _O_ be ? RequireObjectCoercible(*this* value).
+		1. Let _S_ be ? ToString(_O_).
+		1. Let _isRegExp_ be ? IsRegExp(_searchString_).
+		1. If _isRegExp_ is *true*, throw a *TypeError* exception.
+		1. Let _searchStr_ be ? ToString(_searchString_).
+		1. Let _len_ be the length of _S_.
+		1. If _endPosition_ is *undefined*, let _pos_ be _len_; else let _pos_ be ? ToIntegerOrInfinity(_endPosition_).
+		1. Let _end_ be the result of clamping _pos_ between 0 and _len_.
+		1. Let _searchLength_ be the length of _searchStr_.
+		1. If _searchLength_ = 0, return *true*.
+		1. Let _start_ be _end_ - _searchLength_.
+		1. If _start_ &lt; 0, return *false*.
+		1. Let _substring_ be the substring of _S_ from _start_ to _end_.
+		1. If _substring_ is _searchStr_, return *true*.
+		1. Return *false*.
 	</emu-alg>
+	<emu-note>
+		<p>This method returns *true* if the sequence of code units of _searchString_ converted to a String is the same as the corresponding code units of this object (converted to a String) starting at _endPosition_ - length(this). Otherwise it returns *false*.</p>
+	</emu-note>
+	<emu-note>
+		<p>Throwing an exception if the first argument is a RegExp is specified in order to allow future editions to define extensions that allow such argument values.</p>
+	</emu-note>
+	<emu-note>
+		<p>This method is intentionally generic; it does not require that its *this* value be a String object. Therefore, it can be transferred to other kinds of objects for use as a method.</p>
+	</emu-note>
 </emu-clause>
 
 <emu-clause id="sec-slice" type="abstract operation">
-	<h1>
-		Slice (
-			_start_: an ECMAScript language value,
-			_end_: an ECMAScript language value,
-		)
-	</h1>
-	<dl class="header">
-		<dt>description</dt>
-		<dd>It returns _str_. If _start_ is undefined.</dd>
-	</dl>
+	<h1>StringSliceBuiltinsImpl ( _start_, _end_ )</h1>
+	<dl class="header"></dl>
+	<p>This method returns an array containing the elements of the array from element _start_ up to, but not including, element _end_ (or through the end of the array if _end_ is *undefined*). If _start_ is negative, it is treated as <emu-eqn>_length_ + _start_</emu-eqn> where _length_ is the length of the array. If _end_ is negative, it is treated as <emu-eqn>_length_ + _end_</emu-eqn> where _length_ is the length of the array.</p>
+	<p>It performs the following steps when called:</p>
 	<emu-alg>
-		<!-- TODO: optional not working -->
-		1. If _start_ is *undefined*, Return _str_.
-		1. Else, Return _str_.
+		1. Let _O_ be ? RequireObjectCoercible(*this* value).
+		1. Let _S_ be ? ToString(_O_).
+		1. Let _len_ be the length of _S_.
+		1. Let _intStart_ be ? ToIntegerOrInfinity(_start_).
+		1. If _intStart_ = -∞, let _from_ be 0.
+		1. Else if _intStart_ &lt; 0, let _from_ be max(_len_ + _intStart_, 0).
+		1. Else, let _from_ be min(_intStart_, _len_).
+		1. If _end_ is *undefined*, let _intEnd_ be _len_; else let _intEnd_ be ? ToIntegerOrInfinity(_end_).
+		1. If _intEnd_ = -∞, let _to_ be 0.
+		1. Else if _intEnd_ &lt; 0, let _to_ be max(_len_ + _intEnd_, 0).
+		1. Else, let _to_ be min(_intEnd_, _len_).
+		1. If _from_ ≥ _to_, return the empty String.
+		1. Return the substring of _S_ from _from_ to _to_.
 	</emu-alg>
+	<emu-note>
+		<p>This method is intentionally generic; it does not require that its *this* value be a String object. Therefore it can be transferred to other kinds of objects for use as a method.</p>
+	</emu-note>
 </emu-clause>
 
 <emu-clause id="String.prototype.removePrefix">
@@ -63,10 +111,10 @@ contributors: Edwin Kofler
 	<emu-alg>
 		1. Let _O_ be ? RequireObjectCoercible(*this* value).
 		1. Let _S_ be ? ToString(_O_).
-		1. Let _isPrefix_ be ? StartsWith(_S_).
+		1. Let _isPrefix_ be ? StringStartsWithBuiltinsImpl(_S_).
 		1. If _isPrefix_ is *false*, return _S_.
 		1. Let _len_ be the length of _S_.
-		1. Let _substring_ be ? Slice(0, _len_).
+		1. Let _substring_ be ? StringSliceBuiltinsImpl(0, _len_).
 		1. Return _substring_.
 	</emu-alg>
 </emu-clause>
@@ -77,11 +125,11 @@ contributors: Edwin Kofler
 	<emu-alg>
 		1. Let _O_ be ? RequireObjectCoercible(*this* value).
 		1. Let _S_ be ? ToString(_O_).
-		1. Let _isSuffix_ be ? EndsWith(_S_).
+		1. Let _isSuffix_ be ? StringEndsWithBuiltinsImpl(_S_).
 		1. If _isSuffix_ is *false*, return _S_.
 		1. Let _len_ be the length of _S_.
 		1. Let _prefixlen_ be the length of _prefix_.
-		1. Let _substring_ be ? Slice(0, _len_ - _prefixlen_).
+		1. Let _substring_ be ? StringSliceBuiltinsImpl(0, _len_ - _prefixlen_).
 		1. Return _substring_.
 	</emu-alg>
 </emu-clause>

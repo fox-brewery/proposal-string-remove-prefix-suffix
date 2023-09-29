@@ -12,7 +12,7 @@ ECMAScript proposal, specification, and reference implementation for `String.pro
 
 ## Motivation
 
-The lack of a built-in way to remove a prefix substring or a suffix substring from a string is an inconvenience and incompleteness of JavaScript. Fixing this paper-cut will bring JavaScript more in line with the conveniences of other modern-day languages.
+The lack of a built-in way to remove a prefix substring or a suffix substring from a string is an inconvenience and incompleteness of JavaScript. Removing prefix and suffix substrings is a common string manipulation operation and excluding this from ECMAScript means program authors must always write their own implementation or be left with verbose or slower alternatives. Fixing this paper-cut will bring JavaScript more in line with the conveniences of other modern-day languages.
 
 Commonly, [`.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) is used, but it's both verbose and not semantic.
 
@@ -35,7 +35,7 @@ if (str.endsWith(substr)) {
 }
 ```
 
-Sometimes, regular expressions are used, but it has suboptimal performance ([jsPerf](https://jsperf.app/haxumu/2)) and requires knowledge of regular expressions.
+Sometimes, regular expressions are used, but it has suboptimal performance ([jsPerf](https://jsperf.app/haxumu/2)) and requires knowledge of regular expressions (otherwise, it is cryptic).
 
 ```js
 let str = 'mudkip'
