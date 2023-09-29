@@ -1,6 +1,6 @@
 # String.prototype.removePrefix / String.prototype.removeSuffix
 
-ECMAScript proposal, specification, and reference implementation for `String.prototype.remove{Prefix,Suffix}`.
+ECMAScript proposal and specification for `String.prototype.remove{Prefix,Suffix}`.
 
 ## Status
 
@@ -14,14 +14,14 @@ ECMAScript proposal, specification, and reference implementation for `String.pro
 
 The lack of a built-in way to remove a prefix substring or a suffix substring from a string is an inconvenience and incompleteness of JavaScript. Removing prefix and suffix substrings is a common string manipulation operation and excluding this from ECMAScript means program authors must always write their own implementation or be left with verbose or slower alternatives. Fixing this paper-cut will bring JavaScript more in line with the conveniences of other modern-day languages.
 
-Commonly, [`.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) is used, but it's both verbose and not semantic.
+Without native methods, this functionality is often written on-the-fly. For example, to remove a prefix substring, the target string is checked if it `startsWith` that substring. If so, a `.slice()` is performed on the string, effectively removing the substring; otherwise, the target string is used. Even when using the ternary conditional operator, this is verbose code that either requires assigning the substring to a variable, or duplicating the substring string literal twice.
 
 ```js
 // removePrefix
-let str = 'greninja'
-let substr = 'gre'
+const str = 'greninja'
+const substr = 'gre'
 if (str.startsWith(substr)) {
-  str.slice(substr.length)
+  result = str.slice(substr.length)
   // => ninja
 }
 
@@ -29,19 +29,20 @@ if (str.startsWith(substr)) {
 // removeSuffix
 let str = 'charizard'
 let substr = 'izard'
-if (str.endsWith(substr)) {
-  str.slice(0, str.length - substr.length)
-  // => char
-}
+let result = str.endsWith(substr) ? str.slice(0, str.length - substr.length) : result
+result
+// => char
 ```
 
-Sometimes, regular expressions are used, but it has suboptimal performance ([jsPerf](https://jsperf.app/haxumu/2)) and requires knowledge of regular expressions (otherwise, it is cryptic).
+Another common alternative is the use of regular expressions. Although the code is shorter, it is more cryptic (requires knowledge of regular expressions) and has [suboptimal performance](https://jsperf.app/haxumu/2).
 
 ```js
 let str = 'mudkip'
 str.replace(/kip$/, '')
 // => mud
 ```
+
+In both alternatives, the semantics aren't always obvious. Other [popular languages](#comparison-to-other-languages) have realized this and have implemented a built-in method to resolve this.
 
 ## Proposed Solution
 
